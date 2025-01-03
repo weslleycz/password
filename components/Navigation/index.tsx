@@ -2,9 +2,8 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { Box, FAB, IconButton } from "@react-native-material/core";
-import { useRouter, usePathname } from "expo-router";
+import { usePathname } from "expo-router";
 import React from "react";
-import { Text } from "react-native";
 
 export const Navigation = () => {
   const pathname = usePathname();
@@ -15,7 +14,7 @@ export const Navigation = () => {
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
-        padding: 9,
+        padding: 7,
         backgroundColor: "#ffffff",
       }}
     >
@@ -25,13 +24,14 @@ export const Navigation = () => {
             name="key"
             {...props}
             color={pathname === "/" ? "#5bfcac" : "#E9E9EB"}
-            size={30}
+            size={24}
           />
         )}
         onPress={() => alert("Home button pressed")}
       />
       <FAB
         icon={(props) => <Icon name="plus" {...props} color="#ffffff" />}
+        size="mini"
         color="primary"
         style={{
           boxShadow: "none",
@@ -44,7 +44,7 @@ export const Navigation = () => {
             name="settings-sharp"
             {...props}
             color={pathname === "/settings" ? "#5bfcac" : "#E9E9EB"}
-            size={30}
+            size={24}
           />
         )}
         onPress={() => alert("Account button pressed")}
