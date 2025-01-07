@@ -8,9 +8,10 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ThemeProvider } from "@react-native-material/core";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "react-native";
 
-import { theme } from "@/theme";
+import { theme, primary } from "@/theme";
 import React from "react";
 
 SplashScreen.preventAutoHideAsync();
@@ -30,13 +31,14 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
+  const queryClient = new QueryClient();
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor={"#5bfcac"} />
+     <QueryClientProvider client={queryClient}>
+     <StatusBar barStyle="light-content" backgroundColor={primary} />
       <ThemeProvider theme={theme}>
         <Stack screenOptions={{
-          navigationBarColor:"#5bfcac",
+          navigationBarColor:primary,
           
         }}>
           <Stack.Screen
@@ -50,6 +52,7 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack>
       </ThemeProvider>
+     </QueryClientProvider>
     </>
   );
 }

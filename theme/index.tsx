@@ -1,5 +1,8 @@
 import { Theme } from "@react-native-material/core";
 
+const primary = "#5bfcc6";
+const secondary = "#E1F5EB";
+
 const theme: Theme = {
   colorScheme: "light",
   elevations: {
@@ -30,8 +33,8 @@ const theme: Theme = {
     24: { elevation: 24 },
   },
   palette: {
-    primary: { main: "#5bfcac", on: "#ffffff" },
-    secondary: { main: "#E1F5EB", on: "#000000" },
+    primary: { main: primary, on: "#ffffff" },
+    secondary: { main: secondary, on: "#000000" },
     background: { main: "#ffffff", on: "#000000" },
     surface: { main: "#ffffff", on: "#000000" },
     error: { main: "#fd1741", on: "#ffffff" },
@@ -71,11 +74,10 @@ const theme: Theme = {
       fontSize: 14,
       fontWeight: "bold",
       cursor: "pointer",
-
     },
     caption: { fontSize: 12, fontWeight: "normal" },
     overline: { fontSize: 10, fontWeight: "normal" },
   },
 };
 
-export { theme };
+export { theme, primary, secondary };
