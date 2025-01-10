@@ -1,4 +1,4 @@
-const generatePassword = (length: number) => {
+const generatePasswordService = (length: number) => {
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
   let newPassword = "";
@@ -9,4 +9,4 @@ const generatePassword = (length: number) => {
   return newPassword;
 };
 
-export {generatePassword}
+export {generatePasswordService}

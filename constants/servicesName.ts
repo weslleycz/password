@@ -1,4 +1,4 @@
-const passwordServices = [
+const servicesName = [
   "100tb",
   "500px",
   "adroll",
@@ -1235,4 +1235,4 @@ const passwordServices = [
   "zwave",
 ];
 
-export { passwordServices };
+export { servicesName };
