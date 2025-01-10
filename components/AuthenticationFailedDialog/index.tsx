@@ -1,4 +1,4 @@
-import { useAuthentication } from "@/Contexts/Authentication";
+import { useAuthentication } from "@/contexts/Authentication";
 import { primary } from "@/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // Importando o ícone
 import React, { useState } from "react";

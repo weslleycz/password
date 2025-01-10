@@ -1,6 +1,8 @@
-import { useAuthentication } from "@/Contexts/Authentication";
-import Entypo from "@expo/vector-icons/Entypo";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useAuthentication } from "@/contexts/Authentication";
+import { Credential } from "@/model/credential.model";
+import { CredentialService } from "@/services/credential.service";
+import { primary } from "@/theme";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   Box,
   Divider,
@@ -8,16 +10,27 @@ import {
   IconButton,
   Text,
 } from "@react-native-material/core";
-import React from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
 import Icon from "react-native-ico-logos";
-import { Credential } from "@/model/credential.model";
 
 type Props = {
   credential: Credential;
 };
 
 export const ServiceIten = ({ credential }: Props) => {
-  const { isAuthenticated, authenticate } = useAuthentication();
+  const { isAuthenticated } = useAuthentication();
+  const [isFavorite, setIsFavorite] = useState(credential.isFavorite);
+    const queryClient = useQueryClient();
+
+  const toggleFavorite = async (id: string) => {
+    const credentialService = new CredentialService();
+    await credentialService.upload(id, { isFavorite: !credential.isFavorite });
+    queryClient.invalidateQueries({ queryKey: ["getAll"] });
+  };
+
+
+
   return (
     <>
       <Box p={4} bg={"#ffffff"}>
@@ -55,16 +68,16 @@ export const ServiceIten = ({ credential }: Props) => {
               </Box>
             </HStack>
           </Box>
-          <Box style={{ justifyContent: "center", width: 96 }}>
+          <Box>
             <HStack>
               <IconButton
+                onPress={() => toggleFavorite(credential.id as string)}
                 icon={(props) => (
-                  <MaterialIcons name="content-copy" size={24} />
-                )}
-              />
-              <IconButton
-                icon={(props) => (
-                  <Entypo name="dots-three-vertical" size={24} color="black" />
+                  <AntDesign
+                    name={credential.isFavorite && isAuthenticated ? "star" : "staro"}
+                    size={24}
+                    color={primary}
+                  />
                 )}
               />
             </HStack>

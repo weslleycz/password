@@ -1,8 +1,9 @@
 import { AuthenticationFailedDialog } from "@/components/AuthenticationFailedDialog";
 import { Filter } from "@/components/Filter";
 import { ServiceIten } from "@/components/ServiceIten";
-import { useAuthentication } from "@/Contexts/Authentication";
+import { useAuthentication } from "@/contexts/Authentication";
 import { useFocusNotifyOnChangeProps } from "@/hooks/useFocusNotifyOnChangeProps";
+import { Credential } from "@/model/credential.model";
 import { CredentialService } from "@/services/credential.service";
 import { primary } from "@/theme";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -24,7 +25,8 @@ export default function HomeScreen() {
     queryFn: async () => {
       const credentialService = new CredentialService();
       return await credentialService.getAll();
-    },    notifyOnChangeProps,
+    },
+    notifyOnChangeProps,
   });
 
   const { isAuthenticated, authenticate } = useAuthentication();
@@ -36,6 +38,13 @@ export default function HomeScreen() {
   }, [isAuthenticated, authenticate]);
 
   const [focused, setFocused] = useState(false);
+  const [filterCredential, setFilterCredential] = useState<Credential[]>([]);
+
+  useEffect(() => {
+    if (typeof data !== "undefined") {
+      setFilterCredential([...data] as unknown as Credential[]);
+    }
+  }, [data]);
 
   const styles = StyleSheet.create({
     textInput: {
@@ -57,7 +66,7 @@ export default function HomeScreen() {
   return (
     <>
       <Box style={{ flex: 1 }} bg={"#fbf7f5"}>
-      <AuthenticationFailedDialog />
+        <AuthenticationFailedDialog />
         <Box m={14}>
           <TextInput
             label="Buscar..."
@@ -85,7 +94,7 @@ export default function HomeScreen() {
           />
         </Box>
         <SafeAreaView style={styles.container}>
-          <Filter />
+          <Filter setFilterCredential={setFilterCredential} all={data as Credential[] } />
           <ScrollView contentContainerStyle={styles.scrollContent}>
             {isLoading ? (
               <>
@@ -99,7 +108,7 @@ export default function HomeScreen() {
               </>
             ) : (
               <>
-                {data?.map((credential, index) => {
+                {filterCredential?.map((credential, index) => {
                   return <ServiceIten credential={credential} key={index} />;
                 })}
               </>

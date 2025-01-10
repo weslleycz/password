@@ -3,17 +3,16 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { Text, View } from "react-native";
-import "react-native-reanimated";
 import { Provider as PaperProvider } from "react-native-paper";
+import "react-native-reanimated";
 
+import { AuthenticationProvider } from "@/contexts/Authentication";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ThemeProvider } from "@react-native-material/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthenticationProvider } from "@/Contexts/Authentication";
 import { StatusBar } from "react-native";
 
-import { theme, primary } from "@/theme";
+import { primary, theme } from "@/theme";
 import React from "react";
 
 SplashScreen.preventAutoHideAsync();

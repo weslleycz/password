@@ -1,5 +1,5 @@
 import { servicesName } from "@/constants/servicesName";
-import { useAuthentication } from "@/Contexts/Authentication";
+import { useAuthentication } from "@/contexts/Authentication";
 import { CredentialService } from "@/services/credential.service";
 import { generatePasswordService } from "@/services/generatePassword.service";
 import { primary } from "@/theme";
@@ -38,7 +38,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
   const [username, setUsername] = useState("");
   const [length, setLength] = useState(0);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const { isAuthenticated, authenticate } = useAuthentication();
+  const { authenticate } = useAuthentication();
 
   const handleFocus = (field: string) => {
     setFocused((prev) => ({
@@ -86,7 +86,6 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
   const handleSubmit = async () => {
     let validationErrors = {} as any;
 
-    // Validação dos campos
     if (!serviceName) {
       validationErrors.serviceName = true;
     }
@@ -109,16 +108,13 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
 
     const credentialService = new CredentialService();
 
-    // Tenta autenticar o usuário
     const authenticated = await authenticate();
 
     if (!authenticated) {
-      // Se a autenticação falhar, exiba uma mensagem ou tome outra ação
       console.log("Authentication failed. Please try again.");
       return;
     }
 
-    // Se a autenticação for bem-sucedida, salva os dados
     credentialService.setItem({
       createdAt: new Date(),
       password,
@@ -126,10 +122,8 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
       username,
     });
 
-    // Invalida as queries para recarregar os dados
     queryClient.invalidateQueries({ queryKey: ["getAll"] });
 
-    // Reseta os campos do formulário e fecha o modal
     setUsername("");
     setPassword("");
     setServiceName("");
