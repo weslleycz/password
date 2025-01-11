@@ -2,7 +2,9 @@ import { AuthenticationFailedDialog } from "@/components/AuthenticationFailedDia
 import { Filter } from "@/components/Filter";
 import { ServiceIten } from "@/components/ServiceIten";
 import { useAuthentication } from "@/contexts/Authentication";
+import { useSettings } from "@/contexts/SettingsContext";
 import { useFocusNotifyOnChangeProps } from "@/hooks/useFocusNotifyOnChangeProps";
+import { languages } from "@/languages";
 import { Credential } from "@/model/credential.model";
 import { CredentialService } from "@/services/credential.service";
 import { primary } from "@/theme";
@@ -19,6 +21,8 @@ import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const { language } = useSettings();
+
   const notifyOnChangeProps = useFocusNotifyOnChangeProps();
   const { data, isLoading } = useQuery({
     queryKey: ["getAll"],
@@ -69,7 +73,7 @@ export default function HomeScreen() {
         <AuthenticationFailedDialog />
         <Box m={14}>
           <TextInput
-            label="Buscar..."
+            label={languages[language].home.input as string}
             variant="flat"
             style={styles.textInput}
             onFocus={() => setFocused(true)}
@@ -94,7 +98,10 @@ export default function HomeScreen() {
           />
         </Box>
         <SafeAreaView style={styles.container}>
-          <Filter setFilterCredential={setFilterCredential} all={data as Credential[] } />
+          <Filter
+            setFilterCredential={setFilterCredential}
+            all={data as Credential[]}
+          />
           <ScrollView contentContainerStyle={styles.scrollContent}>
             {isLoading ? (
               <>

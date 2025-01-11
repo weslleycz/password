@@ -1,19 +1,20 @@
+import { primary } from "@/theme";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { Box, Divider, FAB, IconButton } from "@react-native-material/core";
 import { usePathname } from "expo-router";
 import React, { useState } from "react";
-import { primary } from "@/theme";
-import { Forme } from "../Forme";
+import { router } from 'expo-router';
 
-export const Navigation = () => {
+type Props={
+  setIsOpen:any
+}
+
+export const Navigation = ({setIsOpen}:Props) => {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <>
-      <Forme isOpen={isOpen} setIsOpen={setIsOpen} />
       <Divider />
       <Box
         style={{
@@ -33,7 +34,7 @@ export const Navigation = () => {
               size={24}
             />
           )}
-          onPress={() => alert("Home button pressed")}
+          onPress={() => router.replace('/')}
         />
         <FAB
           icon={(props) => <Icon name="plus" {...props} color="#ffffff" />}
@@ -54,7 +55,7 @@ export const Navigation = () => {
               size={24}
             />
           )}
-          onPress={() => alert("Account button pressed")}
+          onPress={() => router.replace('/settings')}
         />
       </Box>
     </>

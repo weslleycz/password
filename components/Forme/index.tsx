@@ -1,5 +1,6 @@
 import { servicesName } from "@/constants/servicesName";
 import { useAuthentication } from "@/contexts/Authentication";
+import { useSettings } from "@/contexts/SettingsContext";
 import { CredentialService } from "@/services/credential.service";
 import { generatePasswordService } from "@/services/generatePassword.service";
 import { primary } from "@/theme";
@@ -13,10 +14,11 @@ import {
   IconButton,
 } from "@react-native-material/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import { TextInput } from "react-native-paper";
+import { languages } from "../../languages";
 
 type Props = {
   isOpen: boolean;
@@ -138,6 +140,17 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
     },
   });
 
+  const { language } = useSettings();
+
+  useEffect(()=>{
+    console.log(languages.ptBr);
+    
+    console.log(language);
+
+    console.log(languages[language]?.form?.serviceName);
+    console.log(languages[language]);
+  },[language])
+
   return (
     <Modal
       animationIn="slideInUp"
@@ -161,7 +174,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
         <Divider style={styles.divider} />
 
         <TextInput
-          label="Serviço*"
+          label={languages[language]?.form?.serviceName as string}
           style={styles.input}
           mode="outlined"
           value={serviceName}
@@ -209,7 +222,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
         )}
 
         <TextInput
-          label="Nome de usuário / E-mail*"
+          label={languages[language]?.form?.username}
           style={styles.input}
           value={username}
           onChangeText={setUsername}
@@ -242,7 +255,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
         />
 
         <TextInput
-          label="Senha*"
+          label={languages[language]?.form?.password}
           style={styles.passwordInput}
           mode="outlined"
           secureTextEntry={!isPasswordVisible}
@@ -285,7 +298,9 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
         {focused.password && (
           <Box p={2} bg="#f0faf5" style={styles.passwordStrengthContainer}>
             <HStack style={styles.passwordStrengthControls}>
-              <Text style={styles.passwordLength}>Tamanho da senha</Text>
+              <Text style={styles.passwordLength}>
+                {languages[language]?.form?.lengthText}
+              </Text>
               <TextInput
                 textColor="#000000"
                 cursorColor={primary}
@@ -335,7 +350,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
             />
 
             <Button
-              title="Gerar senha"
+              title={languages[language]?.form?.btnGenerate}
               style={styles.button}
               onPress={handleGeneratePassword}
             />
@@ -343,7 +358,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
         )}
 
         <Button
-          title="Salvar"
+          title={languages[language]?.form?.btnSeve}
           style={styles.saveButton}
           onPress={() => mutation.mutate()}
           loadingIndicatorPosition="overlay"

@@ -11,7 +11,7 @@ import {
   Text,
 } from "@react-native-material/core";
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React from "react";
 import Icon from "react-native-ico-logos";
 
 type Props = {
@@ -20,16 +20,13 @@ type Props = {
 
 export const ServiceIten = ({ credential }: Props) => {
   const { isAuthenticated } = useAuthentication();
-  const [isFavorite, setIsFavorite] = useState(credential.isFavorite);
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const toggleFavorite = async (id: string) => {
     const credentialService = new CredentialService();
     await credentialService.upload(id, { isFavorite: !credential.isFavorite });
     queryClient.invalidateQueries({ queryKey: ["getAll"] });
   };
-
-
 
   return (
     <>
@@ -74,7 +71,11 @@ export const ServiceIten = ({ credential }: Props) => {
                 onPress={() => toggleFavorite(credential.id as string)}
                 icon={(props) => (
                   <AntDesign
-                    name={credential.isFavorite && isAuthenticated ? "star" : "staro"}
+                    name={
+                      credential.isFavorite && isAuthenticated
+                        ? "star"
+                        : "staro"
+                    }
                     size={24}
                     color={primary}
                   />

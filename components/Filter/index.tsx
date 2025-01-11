@@ -1,3 +1,5 @@
+import { useSettings } from "@/contexts/SettingsContext";
+import { languages } from "@/languages";
 import { Credential } from "@/model/credential.model";
 import { primary } from "@/theme";
 import { Chip, HStack } from "@react-native-material/core";
@@ -12,14 +14,8 @@ type Props = {
 
 export const Filter = ({ all, setFilterCredential }: Props) => {
   const [status, setStatus] = useState<IStatus>("all");
-
-  const filterRecent = (credentials: Credential[]) => {
-    return credentials.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-  };
-
+   const { language } = useSettings();
+  
   useEffect(() => {
     if (all) {
       const sorted = [...all].sort((a, b) => {
@@ -36,7 +32,7 @@ export const Filter = ({ all, setFilterCredential }: Props) => {
       <HStack m={10} spacing={6}>
         <Chip
           style={status == "all" ? { backgroundColor: primary } : {}}
-          label="All"
+          label={languages[language].home.filter.all as string}
           onPress={() => {
             setStatus("all");
             setFilterCredential(all);
@@ -44,7 +40,7 @@ export const Filter = ({ all, setFilterCredential }: Props) => {
         />
         <Chip
           style={status == "recent" ? { backgroundColor: primary } : {}}
-          label="Recentes"
+          label={languages[language].home.filter.recent as string}
           onPress={() => {
             const sorted = [...all].sort((a, b) => {
               if (a.serviceName < b.serviceName) return -1;
@@ -57,7 +53,7 @@ export const Filter = ({ all, setFilterCredential }: Props) => {
         />
         <Chip
           style={status == "favorite" ? { backgroundColor: primary } : {}}
-          label="Favoritos"
+          label={languages[language].home.filter.favorite as string}
           onPress={() => {
             const filter = all.filter((credential) => credential.isFavorite);
             setFilterCredential([...filter]);

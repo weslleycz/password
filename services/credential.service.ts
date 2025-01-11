@@ -14,17 +14,19 @@ export class CredentialService {
             try {
               return JSON.parse(item);
             } catch (parseError) {
-              console.error(`Error parsing item with key ${key}:`, parseError);
-              return null; // Retorna null caso ocorra erro no parsing
+              console.log(`Error parsing item with key ${key}:`, parseError);
+              
+              return null;
             }
           }
-          return null; // Retorna null caso o item não exista
+          return null;
         })
       );
 
-      return items.filter((item): item is Credential => item !== null); // Filtra valores nulos
+      return items.filter((item): item is Credential => item !== null);
     } catch (error) {
-      console.error("Error fetching items from AsyncStorage:", error);
+      console.log("Error fetching items from AsyncStorage:", error);
+      
       return [];
     }
   }
