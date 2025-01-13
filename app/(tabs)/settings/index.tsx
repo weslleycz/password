@@ -32,7 +32,8 @@ const Config = () => {
           color: "#333",
         }}
       >
-        Configurações
+        
+        {languages[language].settings.title}
       </Text>
       <Box
         m={2}

@@ -18,6 +18,7 @@ export const enUs = {
     btnSave: "Save",
   },
   settings: {
+    title:"Settings",
     languageText: "Language",
     themeText: "Dark theme",
   },

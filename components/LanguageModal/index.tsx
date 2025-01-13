@@ -30,7 +30,7 @@ export const LanguageModal = ({
     <Modal isVisible={isVisible} onBackdropPress={onClose} style={styles.modal}>
       <View style={styles.modalContent}>
         <Text style={styles.title}>
-          {languages[language].modalLanguage.tite}
+          {languages[language].modalLanguage.title}
         </Text>
         {languagesArray.map((lang) => (
           <TouchableOpacity

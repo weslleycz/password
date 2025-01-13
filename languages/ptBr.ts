@@ -18,11 +18,12 @@ export const ptBr = {
     btnSeve: "Salvar",
   },
   settings: {
+    title:"Configurações",
     languageText:"Linguagem",
     themeText:"Tema escuro",
   },
   modalLanguage:{
-    tite:"Selecione o idioma",
+    title:"Selecione o idioma",
     btn:"Fechar",
   }
 };

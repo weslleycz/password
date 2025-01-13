@@ -18,6 +18,7 @@ export const esEs = {
     btnSave: "Guardar",
   },
   settings: {
+    title:"Ajustes",
     languageText: "Idioma",
     themeText: "Tema oscuro",
   },
