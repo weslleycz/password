@@ -15,7 +15,7 @@ export const esEs = {
     password: "Contraseña*",
     lengthText: "Longitud de la contraseña",
     btnGenerate: "Generar contraseña",
-    btnSave: "Guardar",
+    btnSeve: "Guardar",
   },
   settings: {
     title:"Ajustes",
@@ -25,5 +25,9 @@ export const esEs = {
   modalLanguage: {
     title: "Seleccionar idioma",
     btn: "Cerrar",
-  }
+  },
+  modalAuthenticationFailedDialog: {
+    title: "Fallo de Autenticación",
+    text: "El intento de autenticación falló. Por favor, inténtelo de nuevo.",
+  },
 };

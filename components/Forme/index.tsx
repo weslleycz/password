@@ -3,22 +3,30 @@ import { useAuthentication } from "@/contexts/Authentication";
 import { useSettings } from "@/contexts/SettingsContext";
 import { CredentialService } from "@/services/credential.service";
 import { generatePasswordService } from "@/services/generatePassword.service";
-import { primary } from "@/theme";
+import {
+  backgroundDark,
+  backgroundSecondaryDark,
+  backgroundSecondaryLight,
+  primary,
+} from "@/theme";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Slider from "@react-native-community/slider";
 import {
   Box,
   Button,
+  darkTheme,
   Divider,
   HStack,
   IconButton,
+  ThemeProvider,
 } from "@react-native-material/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import { TextInput } from "react-native-paper";
 import { languages } from "../../languages";
+import { theme as themeSystem } from "@/theme";
 
 type Props = {
   isOpen: boolean;
@@ -140,16 +148,107 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
     },
   });
 
-  const { language } = useSettings();
+  const { language, theme } = useSettings();
 
-  useEffect(()=>{
-    console.log(languages.ptBr);
-    
-    console.log(language);
-
-    console.log(languages[language]?.form?.serviceName);
-    console.log(languages[language]);
-  },[language])
+  const styles = StyleSheet.create({
+    modal: {
+      margin: 0,
+      marginTop: 10,
+      justifyContent: "flex-end",
+    },
+    modalContent: {
+      flex: 1,
+      borderTopRightRadius: 20,
+      borderTopLeftRadius: 20,
+      padding: 20,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: -2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    header: {
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    divider: {
+      marginVertical: 10,
+    },
+    input: {
+      marginVertical: 12,
+      borderRadius: 12,
+      backgroundColor: "#fff",
+      paddingLeft: 12,
+      height: 50,
+    },
+    passwordInput: {
+      marginVertical: 12,
+      borderRadius: 12,
+      backgroundColor: "#fff",
+      paddingLeft: 12,
+      height: 50,
+    },
+    passwordLength: {
+      color: "#aaa",
+      marginTop: 8,
+    },
+    passwordStrengthInput: {
+      marginVertical: 12,
+      height: 50,
+      backgroundColor:
+        theme === "dark" ? backgroundSecondaryDark : backgroundSecondaryLight,
+    },
+    passwordStrengthContainer: {
+      marginTop: 1,
+      borderRadius: 8,
+      padding: 12,
+      backgroundColor: theme === "dark" ? "#2e5f4a4c" : "#f0faf5",
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    },
+    passwordStrengthControls: {
+      alignItems: "center",
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
+    button: {
+      marginTop: 20,
+      backgroundColor: "#ffffff",
+      borderRadius: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 15,
+    },
+    saveButton: {
+      marginTop: 20,
+      backgroundColor: primary,
+      borderRadius: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 15,
+    },
+    dropdown: {
+      maxHeight: 120,
+      backgroundColor: "#fff",
+      borderWidth: 1,
+      borderColor: "#d3d3d3",
+      borderRadius: 8,
+      marginTop: -10,
+      marginBottom: 10,
+      elevation: 4,
+    },
+    dropdownItem: {
+      padding: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: "#d3d3d3",
+    },
+    dropdownText: {
+      fontSize: 14,
+      color: "#333",
+    },
+    slider: {
+      height: 40,
+      marginTop: 10,
+    },
+  });
 
   return (
     <Modal
@@ -160,7 +259,10 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
       backdropColor="rgba(0, 0, 0, 0.5)"
       onBackButtonPress={() => setIsOpen(false)}
     >
-      <Box bg="#fff" style={styles.modalContent}>
+      <Box
+        bg={theme === "dark" ? backgroundDark : backgroundSecondaryLight}
+        style={styles.modalContent}
+      >
         <HStack style={styles.header}>
           <IconButton
             color="primary"
@@ -173,189 +275,215 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
 
         <Divider style={styles.divider} />
 
-        <TextInput
-          label={languages[language]?.form?.serviceName as string}
-          style={styles.input}
-          mode="outlined"
-          value={serviceName}
-          error={errors.serviceName}
-          onChangeText={handleServiceNameChange}
-          textColor="#000000"
-          theme={{
-            colors: {
-              primary: primary,
-              placeholder: "#aaa",
-              background: "#fff",
-            },
-          }}
-          outlineStyle={{
-            borderWidth: 2,
-            borderColor: focused.serviceName
-              ? primary
-              : errors.serviceName
-              ? "#ff7979"
-              : "#d3d3d3",
-            backgroundColor: errors.serviceName ? "#fcc7c7" : "#ffffff",
-          }}
-          onFocus={() => {
-            setErrors({
-              ...errors,
-              serviceName: false,
-            });
-            handleFocus("serviceName");
-          }}
-          onBlur={() => handleBlur("serviceName")}
-        />
-
-        {filteredServices.length > 0 && (
-          <ScrollView style={styles.dropdown}>
-            {filteredServices.map((service, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleServiceSelect(service)}
-                style={styles.dropdownItem}
-              >
-                <Text style={styles.dropdownText}>{service}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
-
-        <TextInput
-          label={languages[language]?.form?.username}
-          style={styles.input}
-          value={username}
-          onChangeText={setUsername}
-          mode="outlined"
-          textColor="#000000"
-          theme={{
-            colors: {
-              primary: primary,
-              placeholder: "#aaa",
-              background: "#fff",
-            },
-          }}
-          onBlur={() => handleBlur("username")}
-          outlineStyle={{
-            borderWidth: 2,
-            borderColor: focused.username
-              ? primary
-              : errors.username
-              ? "#ff7979"
-              : "#d3d3d3",
-            backgroundColor: errors.username ? "#fcc7c7" : "#ffffff",
-          }}
-          onFocus={() => {
-            setErrors({
-              ...errors,
-              username: false,
-            });
-            handleFocus("username");
-          }}
-        />
-
-        <TextInput
-          label={languages[language]?.form?.password}
-          style={styles.passwordInput}
-          mode="outlined"
-          secureTextEntry={!isPasswordVisible}
-          value={password}
-          onChangeText={setPassword}
-          textColor="#000000"
-          theme={{
-            colors: {
-              primary: primary,
-              placeholder: "#aaa",
-              background: "#fff",
-            },
-          }}
-          right={
-            <TextInput.Icon
-              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-              color={errors.password ? "#ff7979" : primary}
-              icon={!isPasswordVisible ? "eye-off" : "eye"}
-            />
+        <ThemeProvider
+          theme={
+            theme === "dark"
+              ? {
+                  ...darkTheme,
+                  palette: {
+                    ...darkTheme.palette,
+                    primary: { main: primary, on: "#ffffff" },
+                  },
+                }
+              : themeSystem
           }
-          onBlur={() => handleBlur("password")}
-          outlineStyle={{
-            borderWidth: 2,
-            borderColor: focused.password
-              ? primary
-              : errors.password
-              ? "#ff7979"
-              : "#d3d3d3",
-            backgroundColor: errors.password ? "#fcc7c7" : "#ffffff",
-          }}
-          onFocus={() => {
-            setErrors({
-              ...errors,
-              password: false,
-            });
-            handleFocus("password");
-          }}
-        />
+        >
+          <TextInput
+            label={languages[language]?.form?.serviceName as string}
+            style={styles.input}
+            mode="outlined"
+            value={serviceName}
+            error={errors.serviceName}
+            onChangeText={handleServiceNameChange}
+            textColor={theme === "dark" ? "#ffffff" : "#000000"}
+            theme={{
+              colors: {
+                primary: primary,
+                placeholder: "#aaa",
+                background: "#fff",
+              },
+            }}
+            outlineStyle={{
+              borderWidth: 2,
+              borderColor: focused.serviceName
+                ? primary
+                : errors.serviceName
+                ? "#ff7979"
+                : "#d3d3d3",
+              backgroundColor: errors.serviceName
+                ? "#fcc7c7"
+                : theme === "dark"
+                ? backgroundSecondaryDark
+                : backgroundSecondaryLight,
+            }}
+            onFocus={() => {
+              setErrors({
+                ...errors,
+                serviceName: false,
+              });
+              handleFocus("serviceName");
+            }}
+            onBlur={() => handleBlur("serviceName")}
+          />
 
-        {focused.password && (
-          <Box p={2} bg="#f0faf5" style={styles.passwordStrengthContainer}>
-            <HStack style={styles.passwordStrengthControls}>
-              <Text style={styles.passwordLength}>
-                {languages[language]?.form?.lengthText}
-              </Text>
-              <TextInput
-                textColor="#000000"
-                cursorColor={primary}
-                onChange={(e) => {
-                  const newLength = Number(e.nativeEvent.text);
-                  setLength(isNaN(newLength) ? 0 : newLength);
-                }}
-                right={
-                  <TextInput.Icon
-                    onPress={() => setLength(length + 1)}
-                    color={primary}
-                    icon="plus"
-                  />
-                }
-                left={
-                  <TextInput.Icon
-                    onPress={() =>
-                      setLength(length === 0 ? length : length - 1)
-                    }
-                    color={primary}
-                    icon="minus"
-                  />
-                }
-                onFocus={() => handleFocus("password")}
-                onBlur={() => handleBlur("password")}
-                value={String(length)}
-                outlineStyle={{
-                  borderWidth: 2,
-                  borderColor: primary,
-                }}
-                keyboardType="numeric"
-                mode="outlined"
-                style={styles.passwordStrengthInput}
+          {filteredServices.length > 0 && (
+            <ScrollView style={styles.dropdown}>
+              {filteredServices.map((service, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleServiceSelect(service)}
+                  style={styles.dropdownItem}
+                >
+                  <Text style={styles.dropdownText}>{service}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
+
+          <TextInput
+            label={languages[language]?.form?.username}
+            style={styles.input}
+            value={username}
+            onChangeText={setUsername}
+            mode="outlined"
+            textColor={theme === "dark" ? "#ffffff" : "#000000"}
+            theme={{
+              colors: {
+                primary: primary,
+                placeholder: "#aaa",
+                background: "#fff",
+              },
+            }}
+            onBlur={() => handleBlur("username")}
+            outlineStyle={{
+              borderWidth: 2,
+              borderColor: focused.username
+                ? primary
+                : errors.username
+                ? "#ff7979"
+                : "#d3d3d3",
+              backgroundColor: errors.username
+                ? "#fcc7c7"
+                : theme === "dark"
+                ? backgroundSecondaryDark
+                : backgroundSecondaryLight,
+            }}
+            onFocus={() => {
+              setErrors({
+                ...errors,
+                username: false,
+              });
+              handleFocus("username");
+            }}
+          />
+
+          <TextInput
+            label={languages[language]?.form?.password}
+            style={styles.passwordInput}
+            mode="outlined"
+            secureTextEntry={!isPasswordVisible}
+            value={password}
+            onChangeText={setPassword}
+            textColor={theme === "dark" ? "#ffffff" : "#000000"}
+            theme={{
+              colors: {
+                primary: primary,
+                placeholder: "#aaa",
+                background: "#fff",
+              },
+            }}
+            right={
+              <TextInput.Icon
+                onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                color={errors.password ? "#ff7979" : primary}
+                icon={!isPasswordVisible ? "eye-off" : "eye"}
               />
-            </HStack>
+            }
+            onBlur={() => handleBlur("password")}
+            outlineStyle={{
+              borderWidth: 2,
+              borderColor: focused.password
+                ? primary
+                : errors.password
+                ? "#ff7979"
+                : "#d3d3d3",
+              backgroundColor: errors.password
+                ? "#fcc7c7"
+                : theme === "dark"
+                ? backgroundSecondaryDark
+                : backgroundSecondaryLight,
+            }}
+            onFocus={() => {
+              setErrors({
+                ...errors,
+                password: false,
+              });
+              handleFocus("password");
+            }}
+          />
 
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={100}
-              step={1}
-              value={length}
-              onValueChange={(value) => setLength(value)}
-              minimumTrackTintColor={primary}
-              maximumTrackTintColor="#d3d3d3"
-              thumbTintColor={primary}
-            />
+          {focused.password && (
+            <Box p={2} style={styles.passwordStrengthContainer}>
+              <HStack style={styles.passwordStrengthControls}>
+                <Text style={styles.passwordLength}>
+                  {languages[language]?.form?.lengthText}
+                </Text>
+                <TextInput
+                  textColor={theme === "dark" ? "#ffffff" : "#000000"}
+                  cursorColor={primary}
+                  onChange={(e) => {
+                    const newLength = Number(e.nativeEvent.text);
+                    setLength(isNaN(newLength) ? 0 : newLength);
+                  }}
+                  right={
+                    <TextInput.Icon
+                      onPress={() => setLength(length + 1)}
+                      color={primary}
+                      icon="plus"
+                    />
+                  }
+                  left={
+                    <TextInput.Icon
+                      onPress={() =>
+                        setLength(length === 0 ? length : length - 1)
+                      }
+                      color={primary}
+                      icon="minus"
+                    />
+                  }
+                  onFocus={() => handleFocus("password")}
+                  onBlur={() => handleBlur("password")}
+                  value={String(length)}
+                  outlineStyle={{
+                    borderWidth: 2,
+                    borderColor: primary,
+                  }}
+                  keyboardType="numeric"
+                  mode="outlined"
+                  style={styles.passwordStrengthInput}
+                />
+              </HStack>
 
-            <Button
-              title={languages[language]?.form?.btnGenerate}
-              style={styles.button}
-              onPress={handleGeneratePassword}
-            />
-          </Box>
-        )}
+              <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={100}
+                step={1}
+                value={length}
+                onValueChange={(value) => setLength(value)}
+                minimumTrackTintColor={primary}
+                maximumTrackTintColor="#d3d3d3"
+                thumbTintColor={primary}
+              />
+
+              <Button
+                title={languages[language]?.form?.btnGenerate}
+                style={styles.button}
+                onPress={handleGeneratePassword}
+              />
+            </Box>
+          )}
+        </ThemeProvider>
 
         <Button
           title={languages[language]?.form?.btnSeve}
@@ -369,102 +497,3 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  modal: {
-    margin: 0,
-    marginTop: 10,
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    flex: 1,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  header: {
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  divider: {
-    marginVertical: 10,
-  },
-  input: {
-    marginVertical: 12,
-    borderRadius: 12,
-    backgroundColor: "#fff",
-    paddingLeft: 12,
-    height: 50,
-  },
-  passwordInput: {
-    marginVertical: 12,
-    borderRadius: 12,
-    backgroundColor: "#fff",
-    paddingLeft: 12,
-    height: 50,
-  },
-  passwordLength: {
-    color: "#aaa",
-    marginTop: 8,
-  },
-  passwordStrengthInput: {
-    marginVertical: 12,
-    height: 50,
-    backgroundColor: "#fff",
-  },
-  passwordStrengthContainer: {
-    marginTop: 1,
-    borderRadius: 8,
-    padding: 12,
-    backgroundColor: "#f0faf5",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  passwordStrengthControls: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  button: {
-    marginTop: 20,
-    backgroundColor: "#ffffff",
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-  },
-  saveButton: {
-    marginTop: 20,
-    backgroundColor: primary,
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-  },
-  dropdown: {
-    maxHeight: 120,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#d3d3d3",
-    borderRadius: 8,
-    marginTop: -10,
-    marginBottom: 10,
-    elevation: 4,
-  },
-  dropdownItem: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
-  },
-  dropdownText: {
-    fontSize: 14,
-    color: "#333",
-  },
-  slider: {
-    height: 40,
-    marginTop: 10,
-  },
-});

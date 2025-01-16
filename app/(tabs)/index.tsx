@@ -7,21 +7,30 @@ import { useFocusNotifyOnChangeProps } from "@/hooks/useFocusNotifyOnChangeProps
 import { languages } from "@/languages";
 import { Credential } from "@/model/credential.model";
 import { CredentialService } from "@/services/credential.service";
-import { primary } from "@/theme";
+import {
+  backgroundDark,
+  backgroundLight,
+  backgroundSecondaryDark,
+  backgroundSecondaryLight,
+  primary,
+} from "@/theme";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   ActivityIndicator,
   Box,
   IconButton,
   TextInput,
+  ThemeProvider,
+  darkTheme,
 } from "@react-native-material/core";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { theme as themeSystem } from "@/theme";
 
 export default function HomeScreen() {
-  const { language } = useSettings();
+  const { language, theme } = useSettings();
 
   const notifyOnChangeProps = useFocusNotifyOnChangeProps();
   const { data, isLoading } = useQuery({
@@ -54,9 +63,14 @@ export default function HomeScreen() {
     textInput: {
       elevation: 0,
       boxShadow: "none",
-      borderColor: focused ? primary : "#ffffff",
+      borderColor: focused
+        ? primary
+        : theme === "dark"
+        ? backgroundSecondaryDark
+        : backgroundSecondaryLight,
       borderWidth: 1,
-      backgroundColor: "#ffffff",
+      backgroundColor:
+        theme === "dark" ? backgroundSecondaryDark : backgroundSecondaryLight,
       borderRadius: 10,
     },
     container: {
@@ -69,34 +83,52 @@ export default function HomeScreen() {
 
   return (
     <>
-      <Box style={{ flex: 1 }} bg={"#fbf7f5"}>
+      <Box
+        style={{ flex: 1 }}
+        bg={theme === "dark" ? backgroundDark : backgroundLight}
+      >
         <AuthenticationFailedDialog />
-        <Box m={14}>
-          <TextInput
-            label={languages[language].home.input as string}
-            variant="flat"
-            style={styles.textInput}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            inputStyle={{
-              boxShadow: "none",
-              outline: "none",
-            }}
-            trailing={(props) => (
-              <IconButton
-                icon={(props) => (
-                  <AntDesign
-                    name="search1"
-                    {...props}
-                    color={focused ? primary : "#d3d3d3"}
-                  />
-                )}
-                {...props}
-                color="primary"
-              />
-            )}
-          />
-        </Box>
+        <ThemeProvider
+          theme={
+            theme === "dark"
+              ? {
+                  ...darkTheme,
+                  palette: {
+                    ...darkTheme.palette,
+                    primary: { main: primary, on: "#ffffff" },
+                  },
+                }
+              : themeSystem
+          }
+        >
+          <Box m={14}>
+            <TextInput
+              label={languages[language].home.input as string}
+              variant="flat"
+              style={styles.textInput}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              placeholder=""
+              inputStyle={{
+                boxShadow: "none",
+                outline: "none",
+              }}
+              trailing={(props) => (
+                <IconButton
+                  icon={(props) => (
+                    <AntDesign
+                      name="search1"
+                      {...props}
+                      color={focused ? primary : "#d3d3d3"}
+                    />
+                  )}
+                  {...props}
+                  color="primary"
+                />
+              )}
+            />
+          </Box>
+        </ThemeProvider>
         <SafeAreaView style={styles.container}>
           <Filter
             setFilterCredential={setFilterCredential}

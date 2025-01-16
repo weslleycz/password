@@ -15,7 +15,7 @@ export const enUs = {
     password: "Password*",
     lengthText: "Password length",
     btnGenerate: "Generate password",
-    btnSave: "Save",
+    btnSeve: "Save",
   },
   settings: {
     title:"Settings",
@@ -25,5 +25,9 @@ export const enUs = {
   modalLanguage: {
     title: "Select Language",
     btn: "Close",
-  }
+  },
+  modalAuthenticationFailedDialog: {
+    title: "Authentication Failed",
+    text: "The authentication attempt failed. Please try again.",
+  },
 };

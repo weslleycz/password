@@ -18,12 +18,16 @@ export const ptBr = {
     btnSeve: "Salvar",
   },
   settings: {
-    title:"Configurações",
-    languageText:"Linguagem",
-    themeText:"Tema escuro",
+    title: "Configurações",
+    languageText: "Linguagem",
+    themeText: "Tema escuro",
   },
-  modalLanguage:{
-    title:"Selecione o idioma",
-    btn:"Fechar",
-  }
+  modalLanguage: {
+    title: "Selecione o idioma",
+    btn: "Fechar",
+  },
+  modalAuthenticationFailedDialog: {
+    title: "Falha na Autenticação",
+    text: "A tentativa de autenticação falhou. Por favor, tente novamente.",
+  },
 };

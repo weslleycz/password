@@ -1,7 +1,12 @@
 import { Theme } from "@react-native-material/core";
 
 const primary = "#5bfcc6";
-const secondary = "#E1F5EB";
+const secondary = "#aef5d1";
+const backgroundLight = "#fbf7f5";
+const backgroundSecondaryLight = "#ffffff";
+
+const backgroundDark = "#1B1B1B";
+const backgroundSecondaryDark = "#222222";
 
 const theme: Theme = {
   colorScheme: "light",
@@ -80,4 +85,12 @@ const theme: Theme = {
   },
 };
 
-export { theme, primary, secondary };
+export {
+  theme,
+  primary,
+  secondary,
+  backgroundLight,
+  backgroundSecondaryLight,
+  backgroundDark,
+  backgroundSecondaryDark,
+};

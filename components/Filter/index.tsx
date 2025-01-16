@@ -1,7 +1,7 @@
 import { useSettings } from "@/contexts/SettingsContext";
 import { languages } from "@/languages";
 import { Credential } from "@/model/credential.model";
-import { primary } from "@/theme";
+import { backgroundSecondaryDark, primary } from "@/theme";
 import { Chip, HStack } from "@react-native-material/core";
 import React, { useEffect, useState } from "react";
 
@@ -14,8 +14,8 @@ type Props = {
 
 export const Filter = ({ all, setFilterCredential }: Props) => {
   const [status, setStatus] = useState<IStatus>("all");
-   const { language } = useSettings();
-  
+  const { language, theme } = useSettings();
+
   useEffect(() => {
     if (all) {
       const sorted = [...all].sort((a, b) => {
@@ -26,12 +26,21 @@ export const Filter = ({ all, setFilterCredential }: Props) => {
       setFilterCredential(sorted);
     }
   }, [all]);
-  
+
   return (
     <>
       <HStack m={10} spacing={6}>
         <Chip
-          style={status == "all" ? { backgroundColor: primary } : {}}
+          color={
+            theme === "dark" ? (status == "all" ? "black" : "white") : "black"
+          }
+          style={
+            status == "all"
+              ? { backgroundColor: primary }
+              : theme === "dark"
+              ? { backgroundColor: backgroundSecondaryDark }
+              : {}
+          }
           label={languages[language].home.filter.all as string}
           onPress={() => {
             setStatus("all");
@@ -39,7 +48,20 @@ export const Filter = ({ all, setFilterCredential }: Props) => {
           }}
         />
         <Chip
-          style={status == "recent" ? { backgroundColor: primary } : {}}
+          color={
+            theme === "dark"
+              ? status == "recent"
+                ? "black"
+                : "white"
+              : "black"
+          }
+          style={
+            status == "recent"
+              ? { backgroundColor: primary }
+              : theme === "dark"
+              ? { backgroundColor: backgroundSecondaryDark }
+              : {}
+          }
           label={languages[language].home.filter.recent as string}
           onPress={() => {
             const sorted = [...all].sort((a, b) => {
@@ -52,7 +74,20 @@ export const Filter = ({ all, setFilterCredential }: Props) => {
           }}
         />
         <Chip
-          style={status == "favorite" ? { backgroundColor: primary } : {}}
+          color={
+            theme === "dark"
+              ? status == "favorite"
+                ? "black"
+                : "white"
+              : "black"
+          }
+          style={
+            status == "favorite"
+              ? { backgroundColor: primary }
+              : theme === "dark"
+              ? { backgroundColor: backgroundSecondaryDark }
+              : {}
+          }
           label={languages[language].home.filter.favorite as string}
           onPress={() => {
             const filter = all.filter((credential) => credential.isFavorite);
