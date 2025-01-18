@@ -9,6 +9,7 @@ import "react-native-reanimated";
 
 import { AuthenticationProvider } from "@/contexts/Authentication";
 import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
+import { CredentialSelectedProvider } from "@/contexts/CredentialSelectedContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ThemeProvider } from "@react-native-material/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -40,28 +41,30 @@ export default function RootLayout() {
   return (
     <>
       <AuthenticationProvider>
-            <QueryClientProvider client={queryClient}>
-              <PaperProvider>
-                <StatusBar barStyle="light-content" backgroundColor={primary} />
-                <ThemeProvider theme={theme}>
-                  <Stack
-                    screenOptions={{
-                      navigationBarColor: primary,
-                    }}
-                  >
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{
-                        headerShown: false,
-                        navigationBarHidden: false,
-                        fullScreenGestureEnabled: true,
-                      }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                </ThemeProvider>
-              </PaperProvider>
-            </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <CredentialSelectedProvider>
+          <PaperProvider>
+            <StatusBar barStyle="light-content" backgroundColor={primary} />
+            <ThemeProvider theme={theme}>
+              <Stack
+                screenOptions={{
+                  navigationBarColor: primary,
+                }}
+              >
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false,
+                    navigationBarHidden: false,
+                    fullScreenGestureEnabled: true,
+                  }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </ThemeProvider>
+          </PaperProvider>
+          </CredentialSelectedProvider>
+        </QueryClientProvider>
       </AuthenticationProvider>
     </>
   );

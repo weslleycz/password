@@ -19,6 +19,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import Icon from "react-native-ico-logos";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useCredentialSelected } from "@/contexts/CredentialSelectedContext";
+import { Pressable } from "react-native";
 
 type Props = {
   credential: Credential;
@@ -26,6 +28,8 @@ type Props = {
 
 export const ServiceIten = ({ credential }: Props) => {
   const { isAuthenticated } = useAuthentication();
+  const { setSelected } = useCredentialSelected();
+
   const queryClient = useQueryClient();
 
   const toggleFavorite = async (id: string) => {
@@ -36,81 +40,92 @@ export const ServiceIten = ({ credential }: Props) => {
 
   const { theme } = useSettings();
 
+  const handleSelect = () => {
+    if (isAuthenticated) {
+      setSelected(credential);
+    }
+  };
+
   return (
     <>
-      <Box
-        p={4}
-        bg={
-          theme === "dark" ? backgroundSecondaryDark : backgroundSecondaryLight
-        }
-      >
-        <HStack justify="between">
-          <Box>
-            <HStack m={4} spacing={6}>
-              <Box radius={5} bg={theme === "dark" ? "#0e0e0d2d" : "#fbf7f5"}>
-                <Box
-                  p={7}
-                >
-                  {isAuthenticated ? (
-                    <Icon
-                      height="40"
-                      width="40"
-                      name={credential?.serviceName}
-                    />
-                  ) : (
-                    <MaterialCommunityIcons
-                      name="lock"
-                      size={40}
+      <Pressable onPress={handleSelect}>
+        <Box
+          p={4}
+          bg={
+            theme === "dark"
+              ? backgroundSecondaryDark
+              : backgroundSecondaryLight
+          }
+        >
+          <HStack justify="between">
+            <Box>
+              <HStack m={4} spacing={6}>
+                <Box radius={5} bg={theme === "dark" ? "#0e0e0d2d" : "#fbf7f5"}>
+                  <Box p={7}>
+                    {isAuthenticated ? (
+                      <Icon
+                        height="40"
+                        width="40"
+                        name={credential?.serviceName}
+                      />
+                    ) : (
+                      <MaterialCommunityIcons
+                        name="lock"
+                        size={40}
+                        color={primary}
+                      />
+                    )}
+                  </Box>
+                </Box>
+
+                <Box>
+                  <Text
+                    color={theme === "dark" ? "white" : "black"}
+                    style={{
+                      marginBottom: 2,
+                      filter: isAuthenticated ? "blur(0px)" : "blur(6px)",
+                    }}
+                    variant="h4"
+                  >
+                    {credential?.serviceName !== null &&
+                      credential?.serviceName.charAt(0).toUpperCase() +
+                        credential?.serviceName.slice(1)}
+                  </Text>
+
+                  <Text
+                    color={theme === "dark" ? "white" : "black"}
+                    variant="subtitle1"
+                    style={{
+                      filter: isAuthenticated ? "blur(0px)" : "blur(6px)",
+                    }}
+                  >
+                    {credential?.username}
+                  </Text>
+                </Box>
+              </HStack>
+            </Box>
+            <Box>
+              <HStack>
+                <IconButton
+                  onPress={() => toggleFavorite(credential.id as string)}
+                  icon={(props) => (
+                    <AntDesign
+                      name={
+                        credential.isFavorite && isAuthenticated
+                          ? "star"
+                          : "staro"
+                      }
+                      size={24}
                       color={primary}
                     />
                   )}
-                </Box>
-              </Box>
+                />
+              </HStack>
+            </Box>
+          </HStack>
+        </Box>
+      </Pressable>
 
-              <Box>
-                <Text
-                  color={theme === "dark" ? "white" : "black"}
-                  style={{
-                    marginBottom: 2,
-                    filter: isAuthenticated ? "blur(0px)" : "blur(6px)",
-                  }}
-                  variant="h4"
-                >
-                  {credential?.serviceName}
-                </Text>
-
-                <Text
-                  color={theme === "dark" ? "white" : "black"}
-                  variant="subtitle1"
-                  style={{
-                    filter: isAuthenticated ? "blur(0px)" : "blur(6px)",
-                  }}
-                >
-                  {credential?.username}
-                </Text>
-              </Box>
-            </HStack>
-          </Box>
-          <Box>
-            <HStack>
-              <IconButton
-                onPress={() => toggleFavorite(credential.id as string)}
-                icon={(props) => (
-                  <AntDesign
-                    name={
-                      credential.isFavorite && isAuthenticated
-                        ? "star"
-                        : "staro"
-                    }
-                    size={24}
-                    color={primary}
-                  />
-                )}
-              />
-            </HStack>
-          </Box>
-        </HStack>
-      </Box>
       <Divider style={{ marginBottom: 5 }} />
     </>
   );

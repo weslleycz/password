@@ -1,5 +1,6 @@
 import { AuthenticationFailedDialog } from "@/components/AuthenticationFailedDialog";
 import { Filter } from "@/components/Filter";
+import { ModalService } from "@/components/ModalService";
 import { ServiceIten } from "@/components/ServiceIten";
 import { useAuthentication } from "@/contexts/Authentication";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -13,6 +14,7 @@ import {
   backgroundSecondaryDark,
   backgroundSecondaryLight,
   primary,
+  theme as themeSystem,
 } from "@/theme";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {
@@ -27,7 +29,6 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { theme as themeSystem } from "@/theme";
 
 export default function HomeScreen() {
   const { language, theme } = useSettings();
@@ -88,6 +89,7 @@ export default function HomeScreen() {
         bg={theme === "dark" ? backgroundDark : backgroundLight}
       >
         <AuthenticationFailedDialog />
+        <ModalService />
         <ThemeProvider
           theme={
             theme === "dark"

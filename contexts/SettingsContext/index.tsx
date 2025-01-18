@@ -24,23 +24,23 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [language, setLanguage] = useState<string>("enUs");
-  const colorScheme = useColorScheme(); // Obtém o esquema de cores do sistema
-  const [theme, setTheme] = useState<string>(colorScheme || "light"); // Use 'light' como fallback
-  const [loading, setLoading] = useState<boolean>(true); 
+  const colorScheme = useColorScheme();
+  const [theme, setTheme] = useState<string>(colorScheme || "light");
+  const [loading, setLoading] = useState<boolean>(true);
 
   const loadSettings = async () => {
-    setLoading(true); // Inicia o carregamento das configurações
+    setLoading(true);
     try {
       const storedLanguage = await AsyncStorage.getItem("language");
       const storedTheme = await AsyncStorage.getItem("theme");
 
       if (storedLanguage) setLanguage(storedLanguage);
       if (storedTheme) setTheme(storedTheme);
-      else if (!storedTheme && colorScheme) setTheme(colorScheme); // Define o tema com base no colorScheme se não houver tema salvo
+      else if (!storedTheme && colorScheme) setTheme(colorScheme);
     } catch (error) {
       console.error("Erro ao carregar configurações do AsyncStorage:", error);
     } finally {
-      setLoading(false); // Finaliza o carregamento
+      setLoading(false);
     }
   };
 
@@ -63,7 +63,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
-    loadSettings(); // Carrega as configurações ao inicializar
+    loadSettings();
   }, []);
 
   return (
