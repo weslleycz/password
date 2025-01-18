@@ -13,14 +13,16 @@ import {
   Text,
 } from "@react-native-material/core";
 import * as Clipboard from "expo-clipboard";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import Icon from "react-native-ico-logos";
 import Modal from "react-native-modal";
+import { ServiceOptionsModal } from "../ServiceOptionsModal";
 
 export const ModalService = () => {
   const { theme } = useSettings();
   const { selected, setSelected } = useCredentialSelected();
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const styles = StyleSheet.create({
     modal: {
@@ -43,6 +45,12 @@ export const ModalService = () => {
       alignItems: "center",
       justifyContent: "space-between",
     },
+    menu: {
+      position: "absolute",
+      top: 50,
+      right: 20,
+      zIndex: 10,
+    },
   });
 
   const copyToClipboard = async (text: string) => {
@@ -58,6 +66,11 @@ export const ModalService = () => {
         style={styles.modal}
         backdropColor="rgba(0, 0, 0, 0.5)"
       >
+        <ServiceOptionsModal
+          isVisible={isModalVisible}
+          setIsVisible={setModalVisible}
+          onClose={() => setModalVisible(false)}
+        />
         {selected !== null ? (
           <Box
             bg={theme === "dark" ? backgroundDark : backgroundSecondaryLight}
@@ -71,12 +84,15 @@ export const ModalService = () => {
                   <AntDesign name="close" size={24} color={primary} />
                 )}
               />
-              <IconButton
-                color={theme === "dark" ? "white" : "black"}
-                icon={(props) => (
-                  <MaterialCommunityIcons name="dots-vertical" {...props} />
-                )}
-              />
+              <Box>
+                <IconButton
+                  color={theme === "dark" ? "white" : "black"}
+                  onPress={() => setModalVisible(true)}
+                  icon={(props) => (
+                    <MaterialCommunityIcons name="dots-vertical" {...props} />
+                  )}
+                />
+              </Box>
             </HStack>
 
             <Box p={4}>

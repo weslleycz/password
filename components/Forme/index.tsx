@@ -22,7 +22,7 @@ import {
 } from "@react-native-material/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import { TextInput } from "react-native-paper";
 import { languages } from "../../languages";
@@ -122,6 +122,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
 
     if (!authenticated) {
       console.log("Authentication failed. Please try again.");
+      Alert.alert("Authentication failed. Please try again.")
       return;
     }
 

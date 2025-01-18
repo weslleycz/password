@@ -1,4 +1,3 @@
-import { useAuthentication } from "@/contexts/Authentication";
 import { useSettings } from "@/contexts/SettingsContext";
 import { languages } from "@/languages";
 import {
@@ -6,19 +5,17 @@ import {
   backgroundSecondaryLight,
   primary,
 } from "@/theme";
-import { MaterialCommunityIcons } from "@expo/vector-icons"; // Importando o ícone
-import React, { useState } from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons"; 
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Dialog, Portal, Text } from "react-native-paper";
 
-export const AuthenticationFailedDialog = () => {
-  const [visible, setVisible] = useState(true);
+type Props = {
+  isVisible: boolean;
+};
+
+export const AuthenticationFailedDialog = ({isVisible}:Props) => {
   const { theme, language } = useSettings();
-
-  const { isAuthenticated, authenticate, authenticationFailed } =
-    useAuthentication();
-
-  const hideDialog = () => setVisible(false);
 
   const styles = StyleSheet.create({
     dialog: {
@@ -63,12 +60,7 @@ export const AuthenticationFailedDialog = () => {
 
   return (
     <Portal>
-      <Dialog
-        visible={authenticationFailed}
-        onDismiss={hideDialog}
-        style={styles.dialog}
-        dismissable={false}
-      >
+      <Dialog visible={isVisible} style={styles.dialog} dismissable={false}>
         <Dialog.Content style={styles.content}>
           <View style={styles.iconContainer}>
             <MaterialCommunityIcons

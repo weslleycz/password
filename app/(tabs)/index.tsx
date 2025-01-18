@@ -32,8 +32,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { language, theme } = useSettings();
-
   const notifyOnChangeProps = useFocusNotifyOnChangeProps();
+
   const { data, isLoading } = useQuery({
     queryKey: ["getAll"],
     queryFn: async () => {
@@ -43,16 +43,17 @@ export default function HomeScreen() {
     notifyOnChangeProps,
   });
 
-  const { isAuthenticated, authenticate } = useAuthentication();
+  const { isAuthenticated, authenticate, authenticationFailed, startApp } =
+    useAuthentication();
+
+  const [focused, setFocused] = useState(false);
+  const [filterCredential, setFilterCredential] = useState<Credential[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
       authenticate();
     }
   }, [isAuthenticated, authenticate]);
-
-  const [focused, setFocused] = useState(false);
-  const [filterCredential, setFilterCredential] = useState<Credential[]>([]);
 
   useEffect(() => {
     if (typeof data !== "undefined") {
@@ -88,7 +89,10 @@ export default function HomeScreen() {
         style={{ flex: 1 }}
         bg={theme === "dark" ? backgroundDark : backgroundLight}
       >
-        <AuthenticationFailedDialog />
+        {!startApp && (
+          <AuthenticationFailedDialog isVisible={authenticationFailed} />
+        )}
+
         <ModalService />
         <ThemeProvider
           theme={

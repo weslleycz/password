@@ -1,21 +1,33 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import * as LocalAuthentication from "expo-local-authentication";
 
 interface AuthenticationContextType {
   isAuthenticated: boolean;
   authenticationFailed: boolean;
   authenticate: () => Promise<boolean>;
+  startApp: boolean;
 }
 
 interface AuthenticationProviderProps {
-  children: ReactNode; 
+  children: ReactNode;
 }
 
-const AuthenticationContext = createContext<AuthenticationContextType | undefined>(undefined);
+const AuthenticationContext = createContext<
+  AuthenticationContextType | undefined
+>(undefined);
 
-export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({ children }) => {
+export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
+  children,
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authenticationFailed, setAuthenticationFailed] = useState(false);
+  const [startApp, setStartApp] = useState(false);
 
   async function authenticate(): Promise<boolean> {
     try {
@@ -42,7 +54,11 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({ 
       if (result.success) {
         console.log("Authentication successful!");
         setIsAuthenticated(true);
-        setAuthenticationFailed(false); // Reseta o estado de falha
+        setAuthenticationFailed(false);
+        console.log(!startApp);
+        if (!startApp) {
+          setStartApp(true);
+        }
         return true;
       } else {
         console.log("Authentication failed or was canceled.");
@@ -57,7 +73,9 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({ 
   }
 
   return (
-    <AuthenticationContext.Provider value={{ isAuthenticated, authenticationFailed, authenticate }}>
+    <AuthenticationContext.Provider
+      value={{ isAuthenticated, authenticationFailed, authenticate, startApp }}
+    >
       {children}
     </AuthenticationContext.Provider>
   );
@@ -66,7 +84,9 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({ 
 export const useAuthentication = (): AuthenticationContextType => {
   const context = useContext(AuthenticationContext);
   if (!context) {
-    throw new Error("useAuthentication must be used within an AuthenticationProvider");
+    throw new Error(
+      "useAuthentication must be used within an AuthenticationProvider"
+    );
   }
   return context;
 };
