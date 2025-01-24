@@ -18,11 +18,15 @@ import { StyleSheet } from "react-native";
 import Icon from "react-native-ico-logos";
 import Modal from "react-native-modal";
 import { ServiceOptionsModal } from "../ServiceOptionsModal";
+import { Forme } from "../Forme";
+import { languages } from "@/languages";
 
 export const ModalService = () => {
-  const { theme } = useSettings();
+  const { theme, language } = useSettings();
   const { selected, setSelected } = useCredentialSelected();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const [id, setId] = useState("");
 
   const styles = StyleSheet.create({
     modal: {
@@ -59,6 +63,12 @@ export const ModalService = () => {
 
   return (
     <>
+      <Forme
+        id={id}
+        setId={setId}
+        isOpen={isOpenEdit}
+        setIsOpen={setIsOpenEdit}
+      />
       <Modal
         animationIn="slideInUp"
         animationOut="slideOutDown"
@@ -69,7 +79,10 @@ export const ModalService = () => {
         <ServiceOptionsModal
           isVisible={isModalVisible}
           setIsVisible={setModalVisible}
+          id={selected?.id}
           onClose={() => setModalVisible(false)}
+          setEditModal={setIsOpenEdit}
+          setId={setId}
         />
         {selected !== null ? (
           <Box
@@ -136,7 +149,7 @@ export const ModalService = () => {
                     </Box>
                     <Box>
                       <Text color={"gray"} variant="subtitle1">
-                        Usuário
+                        {languages[language].modalView.userNameLabel}
                       </Text>
                       <Text
                         color={theme === "dark" ? "white" : "black"}
@@ -164,7 +177,7 @@ export const ModalService = () => {
                     </Box>
                     <Box>
                       <Text color={"gray"} variant="subtitle1">
-                        Senha
+                        {languages[language].modalView.passwordLabel}
                       </Text>
                       <Text
                         color={theme === "dark" ? "white" : "black"}

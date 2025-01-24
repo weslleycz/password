@@ -1,25 +1,31 @@
+import { useAuthentication } from "@/contexts/Authentication";
+import { useCredentialSelected } from "@/contexts/CredentialSelectedContext";
 import { useSettings } from "@/contexts/SettingsContext";
 import { languages } from "@/languages";
+import { CredentialService } from "@/services/credential.service";
 import { backgroundSecondaryDark, backgroundSecondaryLight } from "@/theme";
 import { Button } from "@react-native-material/core";
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
-import { CredentialService } from "@/services/credential.service";
-import { useCredentialSelected } from "@/contexts/CredentialSelectedContext";
-import { useAuthentication } from "@/contexts/Authentication";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface ModalProps {
   isVisible: boolean;
   setIsVisible: any;
   onClose: () => void;
+  setEditModal: any;
+  setId: any;
+  id: string | undefined;
 }
 
 export const ServiceOptionsModal = ({
   isVisible,
   onClose,
   setIsVisible,
+  setEditModal,
+  setId,
+  id
 }: ModalProps) => {
   const { language, theme } = useSettings();
   const { selected, setSelected } = useCredentialSelected();
@@ -90,7 +96,6 @@ export const ServiceOptionsModal = ({
           text: "Excluir",
           onPress: async () => {
             const credentialService = new CredentialService();
-            console.log();
             const authenticated = await authenticate();
             if (!authenticated) {
               return;
@@ -100,7 +105,10 @@ export const ServiceOptionsModal = ({
             setSelected(null);
           },
         },
-      ]
+      ],
+      {
+        userInterfaceStyle: theme as "dark" | "light",
+      }
     );
   };
 
@@ -116,7 +124,11 @@ export const ServiceOptionsModal = ({
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.languageButton}
-          // onPress={() => handleLanguageSelect(lang.code)}
+          onPress={() => {
+            setIsVisible(false);
+            setEditModal(true);
+            setId(id);
+          }}
         >
           <Text style={styles.languageText}>Editar</Text>
         </TouchableOpacity>

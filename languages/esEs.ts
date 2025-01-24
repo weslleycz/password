@@ -18,7 +18,7 @@ export const esEs = {
     btnSeve: "Guardar",
   },
   settings: {
-    title:"Ajustes",
+    title: "Ajustes",
     languageText: "Idioma",
     themeText: "Tema oscuro",
   },
@@ -29,5 +29,9 @@ export const esEs = {
   modalAuthenticationFailedDialog: {
     title: "Fallo de Autenticación",
     text: "El intento de autenticación falló. Por favor, inténtelo de nuevo.",
+  },
+  modalView: {
+    userNameLabel: "Usuario",
+    passwordLabel: "Contraseña",
   },
 };

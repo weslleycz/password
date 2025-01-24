@@ -15,7 +15,7 @@ export class CredentialService {
               return JSON.parse(item);
             } catch (parseError) {
               console.log(`Error parsing item with key ${key}:`, parseError);
-              
+
               return null;
             }
           }
@@ -26,7 +26,7 @@ export class CredentialService {
       return items.filter((item): item is Credential => item !== null);
     } catch (error) {
       console.log("Error fetching items from AsyncStorage:", error);
-      
+
       return [];
     }
   }
@@ -71,6 +71,7 @@ export class CredentialService {
       const itemParse = JSON.parse(item as string);
       const jsonValue = JSON.stringify({ ...itemParse, ...value });
       await AsyncStorage.mergeItem(key, jsonValue);
+      return await this.getItem(key);
     } catch (error) {
       console.log(error);
     }

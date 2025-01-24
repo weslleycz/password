@@ -1,5 +1,6 @@
 import { servicesName } from "@/constants/servicesName";
 import { useAuthentication } from "@/contexts/Authentication";
+import { useCredentialSelected } from "@/contexts/CredentialSelectedContext";
 import { useSettings } from "@/contexts/SettingsContext";
 import { CredentialService } from "@/services/credential.service";
 import { generatePasswordService } from "@/services/generatePassword.service";
@@ -8,6 +9,7 @@ import {
   backgroundSecondaryDark,
   backgroundSecondaryLight,
   primary,
+  theme as themeSystem,
 } from "@/theme";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Slider from "@react-native-community/slider";
@@ -21,21 +23,28 @@ import {
   ThemeProvider,
 } from "@react-native-material/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import Modal from "react-native-modal";
 import { TextInput } from "react-native-paper";
 import { languages } from "../../languages";
-import { theme as themeSystem } from "@/theme";
+import { Credential } from "../../model/credential.model";
 
 type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  id?: string;
+  setId?: any;
 };
 
-export const Forme = ({ isOpen, setIsOpen }: Props) => {
+export const Forme = ({ isOpen, setIsOpen, id, setId }: Props) => {
   const queryClient = useQueryClient();
-
   const [focused, setFocused] = useState({
     serviceName: false,
     username: false,
@@ -49,6 +58,8 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
   const [length, setLength] = useState(0);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const { authenticate } = useAuthentication();
+  const { language, theme } = useSettings();
+  const { setSelected } = useCredentialSelected();
 
   const handleFocus = (field: string) => {
     setFocused((prev) => ({
@@ -121,17 +132,25 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
     const authenticated = await authenticate();
 
     if (!authenticated) {
-      console.log("Authentication failed. Please try again.");
-      Alert.alert("Authentication failed. Please try again.")
+      Alert.alert("Authentication failed. Please try again.");
       return;
     }
 
-    credentialService.setItem({
-      createdAt: new Date(),
-      password,
-      serviceName,
-      username,
-    });
+    if (id) {
+      const server = await credentialService.upload(id, {
+        password,
+        serviceName,
+        username,
+      });
+      setSelected(server as unknown as Credential);
+    } else {
+      await credentialService.setItem({
+        createdAt: new Date(),
+        password,
+        serviceName,
+        username,
+      });
+    }
 
     queryClient.invalidateQueries({ queryKey: ["getAll"] });
 
@@ -149,7 +168,39 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
     },
   });
 
-  const { language, theme } = useSettings();
+  const handleClose = () => {
+    setIsOpen(false);
+    setErrors({
+      serviceName: false,
+      username: false,
+      password: false,
+    });
+    setFocused({
+      serviceName: false,
+      username: false,
+      password: false,
+    });
+    setPassword("");
+    setServiceName("");
+    setUsername("");
+    setLength(0);
+    if (id) {
+      setId("");
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (id) {
+        const credential = new CredentialService();
+        const server = await credential.getItem(id);
+        setPassword(String(server?.password));
+        setUsername(String(server?.username));
+        setServiceName(String(server?.serviceName));
+        setLength(Number(server?.password.length));
+      }
+    })();
+  }, [id]);
 
   const styles = StyleSheet.create({
     modal: {
@@ -258,7 +309,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
       isVisible={isOpen}
       style={styles.modal}
       backdropColor="rgba(0, 0, 0, 0.5)"
-      onBackButtonPress={() => setIsOpen(false)}
+      onBackButtonPress={() => handleClose()}
     >
       <Box
         bg={theme === "dark" ? backgroundDark : backgroundSecondaryLight}
@@ -267,7 +318,7 @@ export const Forme = ({ isOpen, setIsOpen }: Props) => {
         <HStack style={styles.header}>
           <IconButton
             color="primary"
-            onPress={() => setIsOpen(false)}
+            onPress={() => handleClose()}
             icon={(props) => (
               <AntDesign name="close" size={24} color={primary} />
             )}

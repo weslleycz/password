@@ -30,4 +30,8 @@ export const enUs = {
     title: "Authentication Failed",
     text: "The authentication attempt failed. Please try again.",
   },
+  modalView: {
+    userNameLabel: "User",
+    passwordLabel: "Password",
+  },
 };

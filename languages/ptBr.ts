@@ -30,4 +30,8 @@ export const ptBr = {
     title: "Falha na Autenticação",
     text: "A tentativa de autenticação falhou. Por favor, tente novamente.",
   },
+  modalView: {
+    userNameLabel: "Usuário",
+    passwordLabel: "Senha",
+  },
 };
